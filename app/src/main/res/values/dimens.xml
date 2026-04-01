@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="space_4">4dp</dimen>
+    <dimen name="space_8">8dp</dimen>
+    <dimen name="space_12">12dp</dimen>
+    <dimen name="space_16">16dp</dimen>
+    <dimen name="space_20">20dp</dimen>
+    <dimen name="space_24">24dp</dimen>
+    <dimen name="space_32">32dp</dimen>
+
+    <dimen name="radius_input">16dp</dimen>
+    <dimen name="radius_button">18dp</dimen>
+    <dimen name="radius_card">24dp</dimen>
+    <dimen name="radius_hero">28dp</dimen>
+    <dimen name="radius_bottom_nav">24dp</dimen>
+
+    <dimen name="page_horizontal_padding">20dp</dimen>
+    <dimen name="card_padding">18dp</dimen>
+    <dimen name="space_10">10dp</dimen>
+</resources>

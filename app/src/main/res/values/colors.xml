@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand / Accent -->
+    <color name="accent_primary">#5B6CFF</color>
+    <color name="accent_pressed">#4C5CE0</color>
+    <color name="accent_soft">#EEF1FF</color>
+
+    <!-- Background / Surface -->
+    <color name="bg_app">#F5F5F7</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_soft">#FAFAFC</color>
+    <color name="border_light">#E5E7EB</color>
+
+    <!-- Text -->
+    <color name="text_primary">#111827</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_tertiary">#9CA3AF</color>
+    <color name="text_on_accent">#FFFFFF</color>
+
+    <!-- Status -->
+    <color name="status_todo_bg">#EAF2FF</color>
+    <color name="status_todo_text">#2457D6</color>
+
+    <color name="status_doing_bg">#FFF4E5</color>
+    <color name="status_doing_text">#B5690E</color>
+
+    <color name="status_done_bg">#EAF8EE</color>
+    <color name="status_done_text">#1F8A4D</color>
+
+    <color name="danger_bg">#FDECEC</color>
+    <color name="danger_text">#C0392B</color>
+    <color name="danger_border">#F3C1BC</color>
+</resources>
