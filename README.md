@@ -806,25 +806,6 @@ git clone https://github.com/GeniusNefelibata/ProjectPilot.git
 
 ---
 
-## Git Workflow
-
-Typical Git workflow used in this project:
-
-~~~bash
-git status
-git add .
-git commit -m "Your commit message"
-git push origin main
-~~~
-
-**Example recent commit theme:**
-
-- refine project management UI
-- add multi-project workflow
-- polish project switcher and form dialogs
-
----
-
 ## Current Functional Scope
 
 The current version of ProjectPilot already supports:
