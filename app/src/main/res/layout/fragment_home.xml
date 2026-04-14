@@ -25,6 +25,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/tv_project_name"
                 android:text="PROJECTPILOT"
                 android:textAllCaps="true"
                 android:textColor="@color/text_on_accent"
@@ -46,15 +47,14 @@
 
             <TextView
                 android:id="@+id/tv_project_subinfo"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="COMP7506B workspace\nDeadline: May 3, 2026"
-                android:textColor="@color/text_on_accent"
+                android:layout_marginTop="10dp"
+                android:text="COMP7506B workspace&#10;Due May 3, 2026 · 1 task · 1 meeting"
+                android:textColor="#E6E8FF"
                 android:textSize="15sp"
-                android:fontFamily="sans-serif"
                 android:lineSpacingExtra="3dp"
-                android:alpha="0.92" />
+                android:alpha="0.92"/>
         </LinearLayout>
 
         <LinearLayout

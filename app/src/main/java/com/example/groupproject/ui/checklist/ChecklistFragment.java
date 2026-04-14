@@ -1,6 +1,5 @@
 package com.example.groupproject.ui.checklist;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -13,7 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.groupproject.CurrentProjectManager;
 import com.example.groupproject.R;
+import com.example.groupproject.data.db.AppDatabase;
+import com.example.groupproject.data.model.ProjectChecklistState;
 
 public class ChecklistFragment extends Fragment {
 
@@ -25,15 +27,8 @@ public class ChecklistFragment extends Fragment {
     private CheckBox cbVideoReady;
     private TextView tvChecklistSummary;
 
-    private SharedPreferences sharedPreferences;
-
-    private static final String PREF_NAME = "checklist_prefs";
-    private static final String KEY_REPORT = "report_completed";
-    private static final String KEY_SOURCE = "source_code_ready";
-    private static final String KEY_README = "readme_ready";
-    private static final String KEY_SLIDES = "slides_ready";
-    private static final String KEY_DEMO = "demo_ready";
-    private static final String KEY_VIDEO = "video_ready";
+    private ProjectChecklistState currentChecklistState;
+    private boolean isBindingState = false;
 
     public ChecklistFragment() {
     }
@@ -53,69 +48,118 @@ public class ChecklistFragment extends Fragment {
         cbVideoReady = view.findViewById(R.id.cb_video_ready);
         tvChecklistSummary = view.findViewById(R.id.tv_checklist_summary);
 
-        sharedPreferences = requireContext().getSharedPreferences(PREF_NAME, 0);
-
-        loadChecklistState();
         setupListeners();
-        updateSummary();
+        loadChecklistState();
 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadChecklistState();
+    }
+
     private void loadChecklistState() {
-        cbReportCompleted.setChecked(sharedPreferences.getBoolean(KEY_REPORT, false));
-        cbSourceCodeReady.setChecked(sharedPreferences.getBoolean(KEY_SOURCE, false));
-        cbReadmeReady.setChecked(sharedPreferences.getBoolean(KEY_README, false));
-        cbSlidesReady.setChecked(sharedPreferences.getBoolean(KEY_SLIDES, false));
-        cbDemoReady.setChecked(sharedPreferences.getBoolean(KEY_DEMO, false));
-        cbVideoReady.setChecked(sharedPreferences.getBoolean(KEY_VIDEO, false));
+        if (getContext() == null) return;
+
+        AppDatabase database = AppDatabase.getInstance(getContext());
+        int currentProjectId = CurrentProjectManager.getCurrentProjectId(getContext());
+
+        currentChecklistState = database.projectChecklistDao().getChecklistByProjectId(currentProjectId);
+
+        if (currentChecklistState == null) {
+            currentChecklistState = new ProjectChecklistState(
+                    currentProjectId,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false
+            );
+            long insertedId = database.projectChecklistDao().insert(currentChecklistState);
+            currentChecklistState.setId((int) insertedId);
+        }
+
+        bindChecklistStateToViews();
+        updateSummary();
+    }
+
+    private void bindChecklistStateToViews() {
+        if (currentChecklistState == null) return;
+
+        isBindingState = true;
+
+        cbReportCompleted.setChecked(currentChecklistState.isReportCompleted());
+        cbSourceCodeReady.setChecked(currentChecklistState.isSourceCodeReady());
+        cbReadmeReady.setChecked(currentChecklistState.isReadmeReady());
+        cbSlidesReady.setChecked(currentChecklistState.isSlidesReady());
+        cbDemoReady.setChecked(currentChecklistState.isDemoReady());
+        cbVideoReady.setChecked(currentChecklistState.isVideoReady());
+
+        isBindingState = false;
     }
 
     private void setupListeners() {
         cbReportCompleted.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            saveBoolean(KEY_REPORT, isChecked);
-            updateSummary();
+            if (isBindingState || currentChecklistState == null) return;
+            currentChecklistState.setReportCompleted(isChecked);
+            saveChecklistState();
         });
 
         cbSourceCodeReady.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            saveBoolean(KEY_SOURCE, isChecked);
-            updateSummary();
+            if (isBindingState || currentChecklistState == null) return;
+            currentChecklistState.setSourceCodeReady(isChecked);
+            saveChecklistState();
         });
 
         cbReadmeReady.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            saveBoolean(KEY_README, isChecked);
-            updateSummary();
+            if (isBindingState || currentChecklistState == null) return;
+            currentChecklistState.setReadmeReady(isChecked);
+            saveChecklistState();
         });
 
         cbSlidesReady.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            saveBoolean(KEY_SLIDES, isChecked);
-            updateSummary();
+            if (isBindingState || currentChecklistState == null) return;
+            currentChecklistState.setSlidesReady(isChecked);
+            saveChecklistState();
         });
 
         cbDemoReady.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            saveBoolean(KEY_DEMO, isChecked);
-            updateSummary();
+            if (isBindingState || currentChecklistState == null) return;
+            currentChecklistState.setDemoReady(isChecked);
+            saveChecklistState();
         });
 
         cbVideoReady.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            saveBoolean(KEY_VIDEO, isChecked);
-            updateSummary();
+            if (isBindingState || currentChecklistState == null) return;
+            currentChecklistState.setVideoReady(isChecked);
+            saveChecklistState();
         });
     }
 
-    private void saveBoolean(String key, boolean value) {
-        sharedPreferences.edit().putBoolean(key, value).apply();
+    private void saveChecklistState() {
+        if (getContext() == null || currentChecklistState == null) return;
+
+        AppDatabase.getInstance(getContext())
+                .projectChecklistDao()
+                .update(currentChecklistState);
+
+        updateSummary();
     }
 
     private void updateSummary() {
         int completedCount = 0;
 
-        if (cbReportCompleted.isChecked()) completedCount++;
-        if (cbSourceCodeReady.isChecked()) completedCount++;
-        if (cbReadmeReady.isChecked()) completedCount++;
-        if (cbSlidesReady.isChecked()) completedCount++;
-        if (cbDemoReady.isChecked()) completedCount++;
-        if (cbVideoReady.isChecked()) completedCount++;
+        if (currentChecklistState != null) {
+            if (currentChecklistState.isReportCompleted()) completedCount++;
+            if (currentChecklistState.isSourceCodeReady()) completedCount++;
+            if (currentChecklistState.isReadmeReady()) completedCount++;
+            if (currentChecklistState.isSlidesReady()) completedCount++;
+            if (currentChecklistState.isDemoReady()) completedCount++;
+            if (currentChecklistState.isVideoReady()) completedCount++;
+        }
 
         tvChecklistSummary.setText(completedCount + " of 6 completed");
     }

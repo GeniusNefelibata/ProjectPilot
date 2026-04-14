@@ -14,7 +14,7 @@ import java.util.List;
 public interface MeetingDao {
 
     @Insert
-    void insert(Meeting meeting);
+    long insert(Meeting meeting);
 
     @Update
     void update(Meeting meeting);
@@ -22,12 +22,12 @@ public interface MeetingDao {
     @Delete
     void delete(Meeting meeting);
 
-    @Query("SELECT * FROM meetings WHERE id = :meetingId LIMIT 1")
-    Meeting getMeetingById(int meetingId);
-
     @Query("SELECT * FROM meetings ORDER BY id DESC")
     List<Meeting> getAllMeetings();
 
-    @Query("DELETE FROM meetings")
-    void deleteAllMeetings();
+    @Query("SELECT * FROM meetings WHERE projectId = :projectId ORDER BY id DESC")
+    List<Meeting> getMeetingsByProjectId(int projectId);
+
+    @Query("SELECT * FROM meetings WHERE id = :meetingId LIMIT 1")
+    Meeting getMeetingById(int meetingId);
 }

@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.groupproject.CurrentProjectManager;
 import com.example.groupproject.R;
 import com.example.groupproject.data.db.AppDatabase;
 import com.example.groupproject.data.model.Task;
@@ -27,7 +28,7 @@ public class TasksFragment extends Fragment implements TaskAdapter.OnTaskClickLi
     private Button btnAddTask;
     private TextView tvEmptyTasks;
     private TaskAdapter taskAdapter;
-    private final List<Task> taskList = new ArrayList<>();
+    private List<Task> taskList = new ArrayList<>();
 
     public TasksFragment() {
     }
@@ -64,9 +65,11 @@ public class TasksFragment extends Fragment implements TaskAdapter.OnTaskClickLi
     private void loadTasks() {
         if (getContext() == null) return;
 
+        int currentProjectId = CurrentProjectManager.getCurrentProjectId(getContext());
+
         List<Task> tasksFromDb = AppDatabase.getInstance(getContext())
                 .taskDao()
-                .getAllTasks();
+                .getTasksByProjectId(currentProjectId);
 
         taskAdapter.setTaskList(tasksFromDb);
 

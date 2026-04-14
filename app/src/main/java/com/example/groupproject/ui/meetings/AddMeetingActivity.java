@@ -9,10 +9,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.groupproject.CurrentProjectManager;
 import com.example.groupproject.R;
 import com.example.groupproject.data.db.AppDatabase;
 import com.example.groupproject.data.model.Meeting;
-//import com.example.groupproject.ui.MotionUtils;
 
 import java.util.Calendar;
 
@@ -34,9 +34,6 @@ public class AddMeetingActivity extends AppCompatActivity {
         btnSaveMeeting = findViewById(R.id.btn_save_meeting);
 
         etMeetingDate.setOnClickListener(v -> showDatePicker());
-
-//        MotionUtils.applyPressAnimation(btnSaveMeeting);
-
         btnSaveMeeting.setOnClickListener(v -> saveMeeting());
     }
 
@@ -81,7 +78,9 @@ public class AddMeetingActivity extends AppCompatActivity {
             notes = "No notes";
         }
 
-        Meeting meeting = new Meeting(title, meetingDate, notes);
+        int currentProjectId = CurrentProjectManager.getCurrentProjectId(this);
+
+        Meeting meeting = new Meeting(currentProjectId, title, meetingDate, notes);
 
         AppDatabase.getInstance(this)
                 .meetingDao()
@@ -89,5 +88,14 @@ public class AddMeetingActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Meeting saved", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(
+                R.anim.activity_close_enter,
+                R.anim.activity_close_exit
+        );
     }
 }

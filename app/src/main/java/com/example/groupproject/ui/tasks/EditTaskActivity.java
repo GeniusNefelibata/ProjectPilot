@@ -141,14 +141,24 @@ public class EditTaskActivity extends AppCompatActivity {
             dueDate = "No due date";
         }
 
-        currentTask.setTitle(title);
-        currentTask.setAssignee(assignee);
-        currentTask.setDueDate(dueDate);
-        currentTask.setStatus(status);
+        Task task = AppDatabase.getInstance(this)
+                .taskDao()
+                .getTaskById(taskId);
+
+        if (task == null) {
+            Toast.makeText(this, "Task not found", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        task.setTitle(title);
+        task.setAssignee(assignee);
+        task.setDueDate(dueDate);
+        task.setStatus(status);
 
         AppDatabase.getInstance(this)
                 .taskDao()
-                .update(currentTask);
+                .update(task);
 
         Toast.makeText(this, "Task updated", Toast.LENGTH_SHORT).show();
         finish();

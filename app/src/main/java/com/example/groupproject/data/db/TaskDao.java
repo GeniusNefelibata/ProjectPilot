@@ -14,7 +14,7 @@ import java.util.List;
 public interface TaskDao {
 
     @Insert
-    void insert(Task task);
+    long insert(Task task);
 
     @Update
     void update(Task task);
@@ -22,12 +22,12 @@ public interface TaskDao {
     @Delete
     void delete(Task task);
 
-    @Query("SELECT * FROM tasks WHERE id = :taskId LIMIT 1")
-    Task getTaskById(int taskId);
-
     @Query("SELECT * FROM tasks ORDER BY id DESC")
     List<Task> getAllTasks();
 
-    @Query("DELETE FROM tasks")
-    void deleteAllTasks();
+    @Query("SELECT * FROM tasks WHERE projectId = :projectId ORDER BY id DESC")
+    List<Task> getTasksByProjectId(int projectId);
+
+    @Query("SELECT * FROM tasks WHERE id = :taskId LIMIT 1")
+    Task getTaskById(int taskId);
 }

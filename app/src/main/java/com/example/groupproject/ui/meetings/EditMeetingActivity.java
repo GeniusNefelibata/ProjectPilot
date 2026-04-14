@@ -115,13 +115,23 @@ public class EditMeetingActivity extends AppCompatActivity {
             notes = "No notes";
         }
 
-        currentMeeting.setTitle(title);
-        currentMeeting.setMeetingDate(meetingDate);
-        currentMeeting.setNotes(notes);
+        Meeting meeting = AppDatabase.getInstance(this)
+                .meetingDao()
+                .getMeetingById(meetingId);
+
+        if (meeting == null) {
+            Toast.makeText(this, "Meeting not found", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        meeting.setTitle(title);
+        meeting.setMeetingDate(meetingDate);
+        meeting.setNotes(notes);
 
         AppDatabase.getInstance(this)
                 .meetingDao()
-                .update(currentMeeting);
+                .update(meeting);
 
         Toast.makeText(this, "Meeting updated", Toast.LENGTH_SHORT).show();
         finish();

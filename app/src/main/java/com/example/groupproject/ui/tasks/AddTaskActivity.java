@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.groupproject.CurrentProjectManager;
 import com.example.groupproject.R;
 import com.example.groupproject.data.db.AppDatabase;
 import com.example.groupproject.data.model.Task;
@@ -48,9 +49,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
         etTaskDueDate.setOnClickListener(v -> showDatePicker());
 
-        btnSaveTask.setOnClickListener(v -> {
-            saveTask();
-        });
+        btnSaveTask.setOnClickListener(v -> saveTask());
     }
 
     private void showDatePicker() {
@@ -95,7 +94,9 @@ public class AddTaskActivity extends AppCompatActivity {
             dueDate = "No due date";
         }
 
-        Task task = new Task(title, assignee, dueDate, status);
+        int currentProjectId = CurrentProjectManager.getCurrentProjectId(this);
+
+        Task task = new Task(currentProjectId, title, assignee, dueDate, status);
 
         AppDatabase.getInstance(this)
                 .taskDao()
@@ -103,5 +104,14 @@ public class AddTaskActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Task saved", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(
+                R.anim.activity_close_enter,
+                R.anim.activity_close_exit
+        );
     }
 }

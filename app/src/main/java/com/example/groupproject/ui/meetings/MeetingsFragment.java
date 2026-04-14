@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.groupproject.CurrentProjectManager;
 import com.example.groupproject.R;
 import com.example.groupproject.data.db.AppDatabase;
 import com.example.groupproject.data.model.Meeting;
@@ -27,7 +28,7 @@ public class MeetingsFragment extends Fragment implements MeetingAdapter.OnMeeti
     private Button btnAddMeeting;
     private TextView tvEmptyMeetings;
     private MeetingAdapter meetingAdapter;
-    private final List<Meeting> meetingList = new ArrayList<>();
+    private List<Meeting> meetingList = new ArrayList<>();
 
     public MeetingsFragment() {
     }
@@ -64,9 +65,11 @@ public class MeetingsFragment extends Fragment implements MeetingAdapter.OnMeeti
     private void loadMeetings() {
         if (getContext() == null) return;
 
+        int currentProjectId = CurrentProjectManager.getCurrentProjectId(getContext());
+
         List<Meeting> meetingsFromDb = AppDatabase.getInstance(getContext())
                 .meetingDao()
-                .getAllMeetings();
+                .getMeetingsByProjectId(currentProjectId);
 
         meetingAdapter.setMeetingList(meetingsFromDb);
 
